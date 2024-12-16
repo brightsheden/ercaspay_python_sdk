@@ -1,5 +1,3 @@
-
-```markdown
 # Ercaspay SDK Documentation
 
 Ercaspay SDK provides an easy and efficient way to interact with the Ercaspay payment gateway. This SDK simplifies the process of making payments, verifying transactions, and handling various payment methods.

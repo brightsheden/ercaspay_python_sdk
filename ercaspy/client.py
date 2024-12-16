@@ -53,7 +53,7 @@ class Ercaspy:
             )
 
         
-    def initiate_checkout(self, payment_data: CheckOutRequest, **args) -> TransactionResponse:
+    def initiate_payment(self, payment_data: CheckOutRequest, **args) -> TransactionResponse:
         response_data = self._request(
             "POST", "/payment/initiate", data=payment_data
         )
@@ -68,7 +68,7 @@ class Ercaspy:
         return TransactionResponse(**response_data)
     
     def initiate_bank_transfer(self, data:TransferRequest) -> TransactionResponse :
-       checkout_response = self.initiate_checkout(data)
+       checkout_response = self.initiate_payment(data)
        transaction_reference = checkout_response.responseBody['transactionReference']
   
      
@@ -86,7 +86,7 @@ class Ercaspy:
         return TransactionResponse(**response_data)
 
     def initiate_ussd_transaction(self, data:TransferRequest , bank_name:str ) -> TransactionResponse:
-        checkout_response = self.initiate_checkout(data)
+        checkout_response = self.initiate_payment(data)
         reference = checkout_response.responseBody['transactionReference']
         print(reference)
         response_data = self._request("POST", f"/payment/ussd/request-ussd-code/{reference}", data={
@@ -96,12 +96,13 @@ class Ercaspy:
         return TransactionResponse(**response_data)
     
 
-    def initiate_card_transaction(self, payload:CardRequest) -> TransactionResponse:
-        from .utils import get_device_details, encryptCard
+    def initiate_card_transaction(self,payload, transaction_ref) -> TransactionResponse:
+        from .utils import get_device_details
+
         data = {
-            "payload":encryptCard(card_number=f"{payload.get('card_number')}", cvv=f"{payload.get('cvv')}", pin=f"{payload.get('pin')}", expiry_date=f"{payload.get('expiry_date')}"),
+            "payload":payload,
             "deviceDetails":get_device_details(),
-            "transactionReference":payload.get('transaction_reference')
+            "transactionReference":transaction_ref
         }
         response_data = self._request("POST", "/payment/cards/initialize", data=data)
 
@@ -139,4 +140,8 @@ class Ercaspy:
     def cancle_transaction(self, transaction_ref:str ) -> TransactionResponse:
         response = self._request("GET", f"/payment/cancel/{transaction_ref}")
         return TransactionResponse(**response)
+
+    def get_banks_list(self):
+        response = self._request("GET", "/payment/ussd/supported-banks")
+        return (response)
        

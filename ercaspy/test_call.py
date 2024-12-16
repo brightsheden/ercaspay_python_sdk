@@ -25,11 +25,11 @@ def initiate_payment():
             "customerName":"Sheden",
             "customerEmail":"shedenbright@gmail.com",
             "currency":"NGN",
-            #"redirectUrl":"https://frontendurl.com",
+            "redirectUrl":"https://frontendurl.com",
             "paymentMethods":"card"   
         }
 
-        response = client.initiate_checkout(payment_data=payment_data)
+        response = client.initiate_payment(payment_data=payment_data)
         print(response)
 
     except APIError as e:
@@ -83,9 +83,9 @@ def ussd_transaction(payment_data):
 #verify_payment('ERCS|20241214113507|1734172507514', 'ussd')
 
 
-def  initiate_card_transaction(data):
+def  initiate_card_transaction(payload, transaction_ref):
    try:
-      response = client.initiate_card_transaction(data)
+      response = client.initiate_card_transaction(payload=payload, transaction_ref=transaction_ref)
       print(response)
 
    except APIError as e:
@@ -156,10 +156,17 @@ data ={
    "cvv":"100",
    "pin":"1234",
    "expiry_date":"0139",
-   "transaction_reference":"ERCS|20241215233226|1734301946521"
+   "transaction_reference":"ERCS|20241216191025|1734372625377"
 
 }
-initiate_card_transaction(data)
+
+from ercaspy.utils import encryptCard
+
+payload = encryptCard(data["card_number"], data["cvv"],data['pin'] , data["expiry_date"])
+
+
+
+#initiate_card_transaction(payload=payload, transaction_ref=data['transaction_reference'])
 #get_card_details("ERCS|20241215173021|1734280221912")
 #verify_card_transaction("dZIsCEqg53")
 #cancle_transaction(transaction_ref="ERCS|20241215151139|1734271899175")
@@ -168,3 +175,6 @@ initiate_card_transaction(data)
 #verify_transaction("ERCS|20241215222920|1734298160289")
 #new_bank_transfer(payment_data)
 #initiate_payment()
+
+
+#print(client.get_banks_list())

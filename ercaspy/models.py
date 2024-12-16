@@ -35,10 +35,10 @@ class ErrorResponse(BaseModel):
 
 
 class CardRequest(BaseModel):
-    card_number: str
-    cvv:str
-    pin:str
-    expiry_date:str
+    # card_number: str
+    # cvv:str
+    # pin:str
+    # expiry_date:str
     payload: str
     transaction_reference: str
     #device_details: dict

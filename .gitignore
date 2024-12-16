@@ -32,3 +32,5 @@ erc_sdk_env
 .idea/
 *.swp
 *.swo
+
+ercaspy/key
